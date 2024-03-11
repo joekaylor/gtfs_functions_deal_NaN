@@ -337,8 +337,8 @@ def add_frequency(
     # Some gtfs feeds only contain direction_id 0, use that as default
     trips_agg.rename(columns={'trip_id': 'ntrips'}, inplace=True)
 
-    start_time = trips_agg.window.apply(lambda x: cutoffs[labels.index(x)])
-    end_time = trips_agg.window.apply(lambda x: cutoffs[labels.index(x) + 1])
+    start_time = trips_agg.window.apply(lambda x: cutoffs[labels.index(x)] if x in labels else None)
+    end_time = trips_agg.window.apply(lambda x: cutoffs[labels.index(x) + 1] if x in labels else None)
 
     trips_agg['min_per_trip'] = ((end_time - start_time)*60 / trips_agg.ntrips)\
         .astype(int)
